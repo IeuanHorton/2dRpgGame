@@ -69,6 +69,13 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    public bool SameFacing(string face)
+    {
+        if (face.Equals(facing.ToString()))
+            return true;
+        return false;
+    }
+
     //Returns and byte based off the direction the player is facing. 0 to 3. Every int goes in the order of NESW
     public byte GetFacingDirection()
     {

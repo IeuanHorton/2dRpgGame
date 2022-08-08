@@ -23,6 +23,8 @@ public class StartBattle : MonoBehaviour
     private Transform attackPos;
 
     private List<Collider2D> hitableEnemys = new List<Collider2D>();
+    [SerializeField]
+    private PlayerMovement pm;
 
     private void Start()
     {
@@ -33,16 +35,21 @@ public class StartBattle : MonoBehaviour
     {
         if(timeBetweenAttack <= 0)//Ensures that the player can not spam the attack button
         {
-            if (Input.GetKey(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space))
             {
                 foreach(Collider2D enemy in hitableEnemys)
                 {
-                    Vector2 distance = enemy.transform.position - this.transform.position;
-                    Vector2 relativePosition = Vector2.zero;
-                    relativePosition.x = Vector2.Dot(distance, this.transform.right.normalized);
-                    relativePosition.y = Vector2.Dot(distance, this.transform.up.normalized);
+                    Vector2 direction = enemy.transform.position - this.transform.position;
+                    string attackDirection = FindAttackingDirection(direction);
 
-                    Debug.Log("Relative Postion x :" + relativePosition.x + ", and y :" + relativePosition.y);
+                    if (pm.SameFacing(attackDirection))
+                    {
+                        Debug.Log("You attacked!");
+                    }
+                    else
+                    {
+                        Debug.Log("You missed");
+                    }
                 }
 
                 MoveToBattle(1);
@@ -52,6 +59,31 @@ public class StartBattle : MonoBehaviour
         {
             timeBetweenAttack -= Time.deltaTime;
         }
+    }
+
+    //Returns the most general location that the enemy is to the player
+    private string FindAttackingDirection(Vector2 direction)
+    {
+        string attackDirection = "Invalid";
+
+        if (direction.x < 0 && Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
+        {
+            attackDirection = "West";
+        }
+        else if (direction.x > 0 && Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
+        {
+            attackDirection = "East";
+        }
+        else if (direction.y < 0 && Mathf.Abs(direction.x) <= Mathf.Abs(direction.y))
+        {
+            attackDirection = "South";
+        }
+        else if (direction.y > 0 && Mathf.Abs(direction.x) <= Mathf.Abs(direction.y))
+        {
+            attackDirection = "North";
+        }
+
+        return attackDirection;
     }
 
     //Have enemy object enter the hitable list
