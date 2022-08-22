@@ -10,11 +10,12 @@ public class Equipment : Item
     [SerializeField]
     private int damageModifer = 0;
 
-    private EquipmentSlot equipSlot;
+    public EquipmentSlot equipSlot;
 
     public override void Use()
     {
         base.Use();
+        EquipmentManager.instance.Equip(this);
     }
 
     public EquipmentSlot getEquipmentType()
